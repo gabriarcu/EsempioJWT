@@ -1,3 +1,4 @@
+require('dotenv').config(); 
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
@@ -5,8 +6,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
-const SECRET_KEY = 'chiaveSegretaPerEsempioScuola';
+const SECRET_KEY = process.env.SECRET_KEY;
+const PORT = process.env.PORT || 3000;
 
 // Configurazione middleware
 app.use(cors());

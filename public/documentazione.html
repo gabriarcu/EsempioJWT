@@ -44,6 +44,17 @@
             <li>Usare secret key complesse</li>
         </ul>
     </div>
+    <!-- Aggiungi a documentazione.html -->
+<div class="security-section">
+    <h2>Gestione delle Chiavi</h2>
+    <p>Il file <code>.env</code> contiene le variabili sensibili:</p>
+    <pre>
+SECRET_KEY="chiaveSegreta123"
+PORT=3000
+    </pre>
+    <p>Il server lo carica all'avvio usando:</p>
+    <pre>require('dotenv').config();</pre>
+</div>
 
     <script>
         // Esempio interattivo
