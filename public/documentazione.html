@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Documentazione JWT</title>
+    <style>
+        .jwt-structure { padding: 20px; background: #f5f5f5; margin: 20px 0; }
+        .code { font-family: monospace; background: #eee; padding: 2px 5px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/index.html">Home</a> |
+        <a href="/documentazione.html">Documentazione</a>
+    </nav>
+
+    <h1>Documentazione Tecnica JWT</h1>
+    
+    <div class="jwt-structure">
+        <h2>Struttura del JWT</h2>
+        <p>Un JWT è composto da tre parti separate da punti:</p>
+        <p class="code">header.payload.signature</p>
+        
+        <h3>Esempio Reale:</h3>
+        <div id="jwtExample"></div>
+    </div>
+
+    <div>
+        <h2>Funzionamento del Sistema</h2>
+        <ol>
+            <li>L'utente effettua il login con username/password</li>
+            <li>Il server verifica le credenziali e genera un JWT</li>
+            <li>Il client salva il token e lo invia in ogni richiesta successiva</li>
+            <li>Il server verifica il token prima di rilasciare i dati protetti</li>
+        </ol>
+    </div>
+
+    <div>
+        <h2>Sicurezza</h2>
+        <ul>
+            <li>Usare sempre HTTPS in produzione</li>
+            <li>Impostare expiration time appropriato</li>
+            <li>Non memorizzare dati sensibili nel payload</li>
+            <li>Usare secret key complesse</li>
+        </ul>
+    </div>
+
+    <script>
+        // Esempio interattivo
+        const examplePayload = {
+            userId: 1,
+            username: "studente",
+            ruolo: "studente",
+            exp: Math.floor(Date.now() / 1000) + 3600
+        };
+
+        const exampleToken = [
+            btoa(JSON.stringify({ alg: "HS256", typ: "JWT"})).replace(/=/g, ''),
+            btoa(JSON.stringify(examplePayload)).replace(/=/g, ''),
+            "firma_digitale_simulata"
+        ].join('.');
+
+        document.getElementById('jwtExample').innerHTML = `
+            <p class="code">${exampleToken}</p>
+            <button onclick="decodeExample()">Decodifica Payload</button>
+            <div id="decodedPayload"></div>
+        `;
+
+        function decodeExample() {
+            const payload = JSON.stringify(examplePayload, null, 2);
+            document.getElementById('decodedPayload').innerHTML = `
+                <pre>${payload}</pre>
+            `;
+        }
+    </script>
+</body>
+</html>

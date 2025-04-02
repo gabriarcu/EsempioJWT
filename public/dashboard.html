@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        .card { border: 1px solid #ddd; padding: 20px; margin: 20px 0; }
+        .role-section { display: none; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/index.html">Home</a> |
+        <a href="/dashboard.html">Dashboard</a>
+    </nav>
+
+    <h1>Dashboard Utente</h1>
+    <div id="userInfo"></div>
+
+    <div class="card role-section" id="studentSection">
+        <h2>Dati Studente</h2>
+        <button onclick="fetchStudentData()">Carica Voti</button>
+        <div id="studentData"></div>
+    </div>
+
+    <div class="card role-section" id="teacherSection">
+        <h2>Area Docente</h2>
+        <button onclick="fetchTeacherData()">Carica Dati Classe</button>
+        <div id="teacherData"></div>
+    </div>
+
+    <script>
+        // Caricamento iniziale
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('jwtToken');
+
+            if (!user || !token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // Mostra info utente
+            document.getElementById('userInfo').innerHTML = `
+                <p>Benvenuto ${user.username} (${user.ruolo})</p>
+                <button onclick="logout()">Logout</button>
+            `;
+
+            // Mostra sezioni in base al ruolo
+            if (user.ruolo === 'studente') {
+                document.getElementById('studentSection').style.display = 'block';
+            } else if (user.ruolo === 'docente') {
+                document.getElementById('studentSection').style.display = 'block';
+                document.getElementById('teacherSection').style.display = 'block';
+            }
+        });
+
+        async function fetchStudentData() {
+            try {
+                const response = await fetch('/api/dati-studente', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                    }
+                });
+
+                const data = await response.json();
+                document.getElementById('studentData').innerHTML = `
+                    <p>Voti: ${data.voti.join(', ')}</p>
+                    <p>Media: ${data.media}</p>
+                `;
+            } catch (error) {
+                console.error('Errore:', error);
+            }
+        }
+
+        async function fetchTeacherData() {
+            try {
+                const response = await fetch('/api/dati-docente', {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                    }
+                });
+
+                const data = await response.json();
+                document.getElementById('teacherData').innerHTML = `
+                    <p>Studenti: ${data.studenti.join(', ')}</p>
+                    <p>Classi: ${data.classi.join(', ')}</p>
+                `;
+            } catch (error) {
+                console.error('Errore:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('user');
+            window.location.href = '/login.html';
+        }
+    </script>
+</body>
+</html>
